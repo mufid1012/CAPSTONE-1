@@ -21,6 +21,9 @@ class UstadzKegiatanController extends Controller
         if ($request->filled('tingkatan') && $request->tingkatan !== 'semua') {
             $kegiatanList = $kegiatanList->filter(fn($k) => $k->tingkatan === $request->tingkatan || $k->tingkatan === 'semua');
         }
+        if ($request->filled('kelas')) {
+            $kegiatanList = $kegiatanList->filter(fn($k) => $k->kelas === $request->kelas || empty($k->kelas));
+        }
 
         if ($selectedUstadzId) {
             $ustadzList = User::role('ustadz')

@@ -55,7 +55,6 @@
                         <th class="px-4 py-3 text-left font-semibold text-gray-600">Juz</th>
                         <th class="px-4 py-3 text-left font-semibold text-gray-600">Surat & Ayat</th>
                         <th class="px-4 py-3 text-center font-semibold text-gray-600">Nilai</th>
-                        <th class="px-4 py-3 text-center font-semibold text-gray-600">Status</th>
                         <th class="px-4 py-3 text-left font-semibold text-gray-600">Catatan</th>
                     </tr></thead>
                     <tbody class="divide-y divide-gray-100">
@@ -65,11 +64,10 @@
                                 <td class="px-4 py-3 text-gray-600">Juz {{ $s->juz }}</td>
                                 <td class="px-4 py-3 text-gray-800">{{ $s->surat }} : {{ $s->ayat }}</td>
                                 <td class="px-4 py-3 text-center font-semibold text-gray-800">{{ $s->nilai ?? '-' }}</td>
-                                <td class="px-4 py-3 text-center"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $s->status_selesai ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700' }}">{{ $s->status_selesai ? 'Selesai' : 'Proses' }}</span></td>
                                 <td class="px-4 py-3 text-sm text-gray-500">{{ Str::limit($s->catatan, 30) ?: '-' }}</td>
                             </tr>
                         @empty
-                            <tr><td colspan="6" class="px-4 py-8 text-center text-gray-400">Belum ada riwayat setoran untuk santri ini.</td></tr>
+                            <tr><td colspan="5" class="px-4 py-8 text-center text-gray-400">Belum ada riwayat setoran untuk santri ini.</td></tr>
                         @endforelse
                     </tbody>
                 </table>

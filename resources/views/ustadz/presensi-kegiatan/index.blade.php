@@ -26,7 +26,12 @@
                 @forelse($presensiList as $presensi)
                     <tr class="hover:bg-gray-50 transition">
                         <td class="px-4 py-3"><span class="font-medium text-gray-800">{{ $presensi->hari }}, {{ $presensi->tanggal->format('d M Y') }}</span></td>
-                        <td class="px-4 py-3 text-gray-600">{{ $presensi->kegiatanPondok->nama_kegiatan }}</td>
+                        <td class="px-4 py-3 text-gray-600">
+                            {{ $presensi->kegiatanPondok->nama_kegiatan }}
+                            @if($presensi->kegiatanPondok->kelas)
+                                <span class="text-xs text-gray-400">(Kelas {{ $presensi->kegiatanPondok->kelas }})</span>
+                            @endif
+                        </td>
                         <td class="px-4 py-3 text-gray-500">{{ $presensi->jam_mulai }}{{ $presensi->jam_selesai ? ' - ' . $presensi->jam_selesai : '' }}</td>
                         <td class="px-4 py-3 text-center">
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $presensi->status === 'valid' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700' }}">

@@ -7,8 +7,8 @@ Sebuah platform berbasis web komprehensif yang dirancang untuk mengelola dan mem
 ## ✨ Fitur Utama
 
 ### 👑 1. Modul Admin (Pengelola)
-* **Manajemen Data Master**: Pengelolaan data Santri (Berdasarkan jenjang Tsanawiyah, Aliyah, dan Takhassus), Ustadz, Wali Murid, dan Kegiatan Pondok.
-* **Manajemen Penugasan**: Mengatur plot ustadz pada kegiatan tertentu serta menentukan Santri Binaan untuk setiap ustadz.
+* **Manajemen Data Master**: Pengelolaan data Santri (berdasarkan jenjang Tsanawiyah, Aliyah, dan Takhassus serta per kelas), Ustadz, Wali Murid, dan Kegiatan Pondok.
+* **Manajemen Penugasan**: Mengatur plot ustadz pada kegiatan tertentu (dengan filter tingkatan & kelas) serta menentukan Santri Binaan untuk setiap ustadz.
 * **Sistem Laporan Global**: Memantau operasional pesantren melalui menu laporan dengan filter terperinci (berdasarkan bulan, tingkatan, kelas, ustadz):
   * **Laporan Presensi Ustadz**
   * **Laporan Presensi Santri**
@@ -16,23 +16,23 @@ Sebuah platform berbasis web komprehensif yang dirancang untuk mengelola dan mem
   * **Laporan Murojaah**
 
 ### 👳‍♂️ 2. Modul Ustadz (Pengajar)
-* **Presensi Geolocation**: Absensi ustadz yang terintegrasi dengan validasi jarak radius koordinat pesantren (dapat dikonfigurasi).
-* **Manajemen Kegiatan**: Mencatat presensi santri di kegiatan yang diampu.
+* **Presensi Geolocation**: Absensi ustadz yang terintegrasi dengan validasi koordinat lokasi pesantren.
+* **Manajemen Kegiatan**: Mencatat presensi santri di kegiatan yang diampu, dengan daftar santri otomatis tersaring sesuai tingkatan dan kelas kegiatan.
 * **Manajemen Al-Qur'an**: Menginput secara spesifik (Juz, Surat, Ayat) nilai Setoran Hafalan dan Murojaah bagi santri binaannya.
 
 ### 👨‍👩‍👧 3. Modul Wali Murid (Orang Tua)
 * **Dashboard Monitoring**: Memantau progres anak (Santri) secara *real-time* dari rumah.
-* **Riwayat Presensi & Akademik**: Mengetahui apakah santri hadir dalam kegiatan pondok serta melihat histori capaian hafalan dan murojaah.
+* **Riwayat Presensi & Akademik**: Mengetahui kehadiran santri dalam kegiatan pondok serta melihat histori capaian hafalan dan murojaah.
 
 ---
 
 ## 🛠️ Teknologi yang Digunakan
 
 * **Framework:** [Laravel 11](https://laravel.com/) (PHP)
-* **Frontend:** [Tailwind CSS](https://tailwindcss.com/) & [Alpine.js](https://alpinejs.dev/) (TALL Stack minimalis tanpa Livewire)
-* **Database:** SQLite (Bawaan) / MySQL / PostgreSQL
+* **Frontend:** [Tailwind CSS](https://tailwindcss.com/) & [Alpine.js](https://alpinejs.dev/)
+* **Database:** SQLite (Development) / PostgreSQL (Production)
 * **Autentikasi & Otorisasi:** [Spatie Laravel Permission](https://spatie.be/docs/laravel-permission)
-* **Pengujian (Testing):** PHPUnit & Laravel Feature Tests
+* **Pengujian:** PHPUnit & Laravel Feature Tests
 
 ---
 
@@ -58,7 +58,7 @@ Sebuah platform berbasis web komprehensif yang dirancang untuk mengelola dan mem
    ```
 
 4. **Migrasi dan *Seeding* Database:**
-   Proses ini akan otomatis membuat tabel, hak akses, akun demo, serta ratusan *dummy data* (riwayat hafalan, murojaah, dan presensi).
+   Proses ini akan otomatis membuat tabel, hak akses, akun demo, serta data contoh (riwayat hafalan, murojaah, dan presensi selama 45 hari).
    ```bash
    php artisan migrate:fresh --seed
    ```
@@ -71,25 +71,63 @@ Sebuah platform berbasis web komprehensif yang dirancang untuk mengelola dan mem
 
 ---
 
-## 🧪 Akun Demo (Testing)
+## 🧪 Akun Demo
 
-Gunakan kredensial berikut untuk menguji coba fitur dalam sistem (Password untuk semua akun di bawah adalah `password`):
+Gunakan kredensial berikut untuk menguji coba fitur dalam sistem (Password: `password`):
 
-| Role | Email | Password |
+| Role | Email | Nama |
 | :--- | :--- | :--- |
-| **Admin** | `admin@pptq.test` | `password` |
-| **Ustadz** | `ustadz1@pptq.test` (hingga `ustadz5`) | `password` |
-| **Wali Murid** | `wali1@pptq.test` (hingga `wali8`) | `password` |
+| **Admin** | `admin@pptq.test` | Administrator |
+| **Ustadz** | `ustadz1@pptq.test` | Ustadz Abdullah Faqih |
+| **Ustadz** | `ustadz2@pptq.test` | Ustadz Muhammad Ridwan |
+| **Ustadz** | `ustadz3@pptq.test` | Ustadz Hasan Al-Basri |
+| **Ustadz** | `ustadz4@pptq.test` | Ustadz Imam Syafi'i |
+| **Ustadz** | `ustadz5@pptq.test` | Ustadz Zainul Arifin |
+| **Wali Murid** | `wali1@pptq.test` | Bapak Ahmad Sulaiman |
+| **Wali Murid** | `wali2@pptq.test` | Ibu Siti Aminah |
+
+> Password untuk semua akun: `password`
 
 ---
 
-## 🌍 Panduan Deployment (Vercel)
+## 📊 Data Contoh
 
-Karena aplikasi ini menggunakan Laravel, *deployment* ke serverless Vercel memerlukan beberapa penyesuaian khusus (seperti menggunakan `vercel-php`).
+Setelah menjalankan `migrate:fresh --seed`, sistem akan terisi data berikut:
 
-1. Pastikan Anda mengatur Environment Variables (`APP_KEY`, `DB_CONNECTION`, dll) di dashboard Vercel.
-2. Jika menggunakan Vercel, SQLite tidak direkomendasikan karena bersifat *serverless/ephemeral* (data akan hilang saat *instance hibernate*). Disarankan untuk menggunakan Database Cloud gratis seperti **Supabase (PostgreSQL)**, **Neon**, atau **PlanetScale (MySQL)** untuk database *production*.
-3. Sesuaikan folder `public` sebagai letak *entry point* dari Vercel.
+* **5 Ustadz** dengan penugasan kegiatan dan santri binaan
+* **8 Wali Murid** yang terhubung dengan santri
+* **24 Santri** tersebar di 3 jenjang:
+  * Tsanawiyah: Kelas 7 (4 santri), Kelas 8 (3 santri), Kelas 9 (3 santri)
+  * Aliyah: Kelas 10 (3 santri), Kelas 11 (3 santri), Kelas 12 (3 santri)
+  * Takhassus: 5 santri
+* **11 Kegiatan Pondok** dengan spesifikasi per tingkatan dan kelas
+* **Riwayat 45 hari** presensi, setoran hafalan, dan murojaah menggunakan nama surat Al-Qur'an yang sesungguhnya
+
+---
+
+## 🌍 Deployment (Vercel + Supabase)
+
+1. Push repositori ke GitHub
+2. Import project di [Vercel](https://vercel.com/)
+3. Buat database PostgreSQL di [Supabase](https://supabase.com/)
+4. Atur Environment Variables di Vercel:
+   ```env
+   DB_CONNECTION=pgsql
+   DB_HOST=<host-supabase>
+   DB_PORT=5432
+   DB_DATABASE=postgres
+   DB_USERNAME=<username-supabase>
+   DB_PASSWORD=<password-supabase>
+   APP_KEY=<copy-dari-env-lokal>
+   APP_URL=https://<domain-vercel>.vercel.app
+   SESSION_DRIVER=cookie
+   CACHE_STORE=array
+   LOG_CHANNEL=stderr
+   ```
+5. Jalankan migrasi dari lokal ke Supabase:
+   ```bash
+   php artisan migrate:fresh --seed
+   ```
 
 ---
 

@@ -61,7 +61,6 @@
                         <th class="px-4 py-3 text-left font-semibold text-gray-600">Juz/Surat/Ayat</th>
                         <th class="px-4 py-3 text-center font-semibold text-gray-600">Nilai</th>
                         <th class="px-4 py-3 text-left font-semibold text-gray-600">Pengampu</th>
-                        <th class="px-4 py-3 text-center font-semibold text-gray-600">Status</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
@@ -76,17 +75,10 @@
                             </td>
                             <td class="px-4 py-3 text-center font-semibold text-gray-800">{{ $hafalan->nilai }}</td>
                             <td class="px-4 py-3 text-gray-600">{{ optional($hafalan->ustadz)->name ?? '-' }}</td>
-                            <td class="px-4 py-3 text-center">
-                                @if($hafalan->status_selesai)
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">Selesai</span>
-                                @else
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">Belum</span>
-                                @endif
-                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-4 py-8 text-center text-gray-400">
+                            <td colspan="6" class="px-4 py-8 text-center text-gray-400">
                                 @if(request()->anyFilled(['bulan', 'tingkatan', 'santri_id', 'ustadz_id']))
                                     Tidak ada data hafalan yang sesuai dengan filter.
                                 @else

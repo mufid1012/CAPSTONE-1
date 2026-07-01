@@ -50,7 +50,6 @@ class MurojaahController extends Controller
             'surat'          => 'required|string|max:100',
             'ayat'           => 'required|string|max:50',
             'nilai'          => 'nullable|numeric|min:0|max:100',
-            'status_selesai' => 'boolean',
         ]);
 
         $ustadz = Auth::user();
@@ -59,7 +58,7 @@ class MurojaahController extends Controller
         }
 
         $validated['ustadz_id'] = $ustadz->id;
-        $validated['status_selesai'] = $request->boolean('status_selesai');
+        $validated['status_selesai'] = $request->has('status_selesai') ? (bool) $request->status_selesai : false;
 
         Murojaah::create($validated);
 

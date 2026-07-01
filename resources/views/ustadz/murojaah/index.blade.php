@@ -53,7 +53,6 @@
                         <th class="px-4 py-3 text-left font-semibold text-gray-600">Juz</th>
                         <th class="px-4 py-3 text-left font-semibold text-gray-600">Surat & Ayat</th>
                         <th class="px-4 py-3 text-center font-semibold text-gray-600">Nilai</th>
-                        <th class="px-4 py-3 text-center font-semibold text-gray-600">Status</th>
                     </tr></thead>
                     <tbody class="divide-y divide-gray-100">
                         @forelse($murojaahList as $m)
@@ -62,10 +61,9 @@
                                 <td class="px-4 py-3 text-gray-600">Juz {{ $m->juz }}</td>
                                 <td class="px-4 py-3 text-gray-800">{{ $m->surat }} : {{ $m->ayat }}</td>
                                 <td class="px-4 py-3 text-center font-semibold text-gray-800">{{ $m->nilai ?? '-' }}</td>
-                                <td class="px-4 py-3 text-center"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $m->status_selesai ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700' }}">{{ $m->status_selesai ? 'Selesai' : 'Proses' }}</span></td>
                             </tr>
                         @empty
-                            <tr><td colspan="5" class="px-4 py-8 text-center text-gray-400">Belum ada riwayat murojaah untuk santri ini.</td></tr>
+                            <tr><td colspan="4" class="px-4 py-8 text-center text-gray-400">Belum ada riwayat murojaah untuk santri ini.</td></tr>
                         @endforelse
                     </tbody>
                 </table>

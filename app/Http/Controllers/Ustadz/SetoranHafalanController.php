@@ -51,18 +51,17 @@ class SetoranHafalanController extends Controller
             'surat'          => 'required|string|max:100',
             'ayat'           => 'required|string|max:50',
             'nilai'          => 'nullable|numeric|min:0|max:100',
-            'status_selesai' => 'boolean',
             'catatan'        => 'nullable|string',
         ]);
 
         // Validasi: santri harus merupakan binaan ustadz
         $ustadz = Auth::user();
         if (!$ustadz->santriBinaan()->where('santri.id', $validated['santri_id'])->exists()) {
-            return back()->withErrors(['santri_id' => 'Santri ini bukan binaan Anda.'])->withInput();
+            return back()->with('error', 'Santri tersebut bukan binaan Anda.');
         }
 
         $validated['ustadz_id'] = $ustadz->id;
-        $validated['status_selesai'] = $request->boolean('status_selesai');
+        $validated['status_selesai'] = $request->has('status_selesai') ? (bool) $request->status_selesai : false;
 
         SetoranHafalan::create($validated);
 

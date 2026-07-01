@@ -42,16 +42,10 @@
                         <input type="text" name="ayat" id="ayat" value="{{ old('ayat') }}" required class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-emerald-500 focus:border-emerald-500 text-sm" placeholder="Contoh: 1-15">
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 gap-4">
                     <div>
                         <label for="nilai" class="block text-sm font-medium text-gray-700 mb-1">Nilai</label>
                         <input type="number" name="nilai" id="nilai" value="{{ old('nilai') }}" min="0" max="100" step="0.01" class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-emerald-500 focus:border-emerald-500 text-sm" placeholder="0 - 100">
-                    </div>
-                    <div class="flex items-end pb-1">
-                        <label class="inline-flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" name="status_selesai" value="1" {{ old('status_selesai') ? 'checked' : '' }} class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500">
-                            <span class="text-sm font-medium text-gray-700">Selesai</span>
-                        </label>
                     </div>
                 </div>
                 <div>

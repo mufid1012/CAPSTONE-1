@@ -3,7 +3,13 @@
 @section('page-title', 'Penugasan Ustadz ke Kegiatan Pondok')
 
 @section('content')
-<div class="space-y-4">
+<div class="space-y-4" x-data="{
+    tingkatan: '{{ request('tingkatan', 'semua') }}',
+    kelasOptions: @js(\App\Models\KegiatanPondok::KELAS_OPTIONS),
+    get availableKelas() {
+        return this.kelasOptions[this.tingkatan] || [];
+    }
+}">
     <p class="text-sm text-gray-500">Tentukan kegiatan pondok yang diampu setiap ustadz.</p>
 
     <!-- Filter -->
@@ -20,16 +26,25 @@
             </div>
             <div class="w-full">
                 <label class="block text-xs font-medium text-gray-500 mb-1">Filter Tingkatan</label>
-                <select name="tingkatan" class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-emerald-500 focus:border-emerald-500 text-sm">
+                <select name="tingkatan" x-model="tingkatan" class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-emerald-500 focus:border-emerald-500 text-sm">
                     <option value="semua">Semua Tingkatan</option>
                     @foreach(\App\Models\Santri::TINGKATAN_LABELS as $key => $label)
-                        <option value="{{ $key }}" {{ request('tingkatan') === $key ? 'selected' : '' }}>{{ $label }}</option>
+                        <option value="{{ $key }}">{{ $label }}</option>
                     @endforeach
+                </select>
+            </div>
+            <div class="w-full" x-show="tingkatan !== 'semua'" x-transition>
+                <label class="block text-xs font-medium text-gray-500 mb-1">Filter Kelas</label>
+                <select name="kelas" class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-emerald-500 focus:border-emerald-500 text-sm">
+                    <option value="">-- Semua Kelas --</option>
+                    <template x-for="k in availableKelas" :key="k">
+                        <option :value="k" x-text="'Kelas ' + k" :selected="k === '{{ request('kelas') }}'"></option>
+                    </template>
                 </select>
             </div>
             <div class="flex items-end gap-2">
                 <button type="submit" class="px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 transition">Filter</button>
-                @if(request()->hasAny(['ustadz_id', 'tingkatan']))
+                @if(request()->hasAny(['ustadz_id', 'tingkatan', 'kelas']))
                     <a href="{{ route('admin.penugasan-kegiatan.index') }}" class="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition">Reset</a>
                 @endif
             </div>
@@ -50,6 +65,7 @@
                             $badgeColors = ['semua' => 'border-gray-300', 'tsanawiyah' => 'border-blue-300', 'aliyah' => 'border-purple-300', 'takhassus' => 'border-amber-300'];
                             $checkedColors = ['semua' => 'border-gray-400 bg-gray-50', 'tsanawiyah' => 'border-blue-400 bg-blue-50', 'aliyah' => 'border-purple-400 bg-purple-50', 'takhassus' => 'border-amber-400 bg-amber-50'];
                             $isChecked = $ustadz->kegiatanPondok->contains($kegiatan->id);
+                            $kelasLabel = $kegiatan->kelas ? ' - Kelas ' . $kegiatan->kelas : '';
                         @endphp
                         <label class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border cursor-pointer transition text-sm
                             {{ $isChecked ? ($checkedColors[$kegiatan->tingkatan] ?? 'border-emerald-300 bg-emerald-50') . ' text-gray-800' : ($badgeColors[$kegiatan->tingkatan] ?? 'border-gray-200') . ' hover:bg-gray-50 text-gray-600' }}">
@@ -57,7 +73,7 @@
                                    {{ $isChecked ? 'checked' : '' }}
                                    class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500">
                             {{ $kegiatan->nama_kegiatan }}
-                            <span class="text-xs text-gray-400">({{ $kegiatan->tingkatan_label }})</span>
+                            <span class="text-xs text-gray-400">({{ $kegiatan->tingkatan_label }}{{ $kelasLabel }})</span>
                         </label>
                     @endforeach
                 </div>

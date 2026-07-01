@@ -19,8 +19,17 @@ class PresensiSantriController extends Controller
     {
         $this->authorizePresensi($presensiKegiatan);
 
-        // Ambil semua santri untuk dicatat kehadirannya
-        $santriList = Santri::orderBy('nama')->get();
+        $kegiatan = $presensiKegiatan->kegiatanPondok;
+
+        // Ambil santri sesuai tingkatan dan kelas kegiatan
+        $santriQuery = Santri::orderBy('nama');
+        if ($kegiatan->tingkatan !== 'semua') {
+            $santriQuery->where('tingkatan', $kegiatan->tingkatan);
+        }
+        if (!empty($kegiatan->kelas)) {
+            $santriQuery->where('kelas', $kegiatan->kelas);
+        }
+        $santriList = $santriQuery->get();
 
         // Ambil presensi santri yang sudah ada (jika sudah pernah diisi)
         $existingPresensi = $presensiKegiatan->presensiSantri()

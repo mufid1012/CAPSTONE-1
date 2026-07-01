@@ -31,7 +31,13 @@ class KegiatanPondokController extends Controller
             'nama_kegiatan' => 'required|string|max:255',
             'deskripsi'     => 'nullable|string',
             'tingkatan'     => 'required|in:semua,tsanawiyah,aliyah,takhassus',
+            'kelas'         => 'nullable|string|max:20',
         ]);
+
+        // Jika tingkatan 'semua', kelas harus null
+        if ($validated['tingkatan'] === 'semua') {
+            $validated['kelas'] = null;
+        }
 
         KegiatanPondok::create($validated);
 
@@ -56,7 +62,12 @@ class KegiatanPondokController extends Controller
             'nama_kegiatan' => 'required|string|max:255',
             'deskripsi'     => 'nullable|string',
             'tingkatan'     => 'required|in:semua,tsanawiyah,aliyah,takhassus',
+            'kelas'         => 'nullable|string|max:20',
         ]);
+
+        if ($validated['tingkatan'] === 'semua') {
+            $validated['kelas'] = null;
+        }
 
         $kegiatan->update($validated);
 

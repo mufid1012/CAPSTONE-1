@@ -17,10 +17,17 @@ class KegiatanPondok extends Model
         'takhassus'  => 'Takhassus',
     ];
 
+    const KELAS_OPTIONS = [
+        'tsanawiyah' => ['7', '8', '9'],
+        'aliyah'     => ['10', '11', '12'],
+        'takhassus'  => ['Takhassus'],
+    ];
+
     protected $fillable = [
         'nama_kegiatan',
         'deskripsi',
         'tingkatan',
+        'kelas',
     ];
 
     public function getTingkatanLabelAttribute(): string

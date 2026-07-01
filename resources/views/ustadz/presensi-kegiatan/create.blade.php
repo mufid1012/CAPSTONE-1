@@ -21,7 +21,10 @@
                     <select name="kegiatan_pondok_id" id="kegiatan_pondok_id" required class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-emerald-500 focus:border-emerald-500 text-sm">
                         <option value="">-- Pilih Kegiatan --</option>
                         @foreach($kegiatanDiampu as $kegiatan)
-                            <option value="{{ $kegiatan->id }}" {{ old('kegiatan_pondok_id') == $kegiatan->id ? 'selected' : '' }}>{{ $kegiatan->nama_kegiatan }}</option>
+                            @php
+                                $kelasInfo = $kegiatan->kelas ? ' - Kelas ' . $kegiatan->kelas : '';
+                            @endphp
+                            <option value="{{ $kegiatan->id }}" {{ old('kegiatan_pondok_id') == $kegiatan->id ? 'selected' : '' }}>{{ $kegiatan->nama_kegiatan }} ({{ $kegiatan->tingkatan_label }}{{ $kelasInfo }})</option>
                         @endforeach
                     </select>
                     @error('kegiatan_pondok_id') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
