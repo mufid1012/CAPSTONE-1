@@ -1,0 +1,37 @@
+@startuml
+
+title Sequence Diagram - Ustadz: Geo-Presensi Kegiatan
+
+actor Ustadz
+participant "Browser" as Browser
+participant "Route" as Route
+participant "PresensiKegiatanController" as Ctrl
+participant "GeolocationService" as Geo
+participant "Database" as DB
+
+Ustadz -> Browser : Klik "Buat Presensi Baru"
+Browser -> Route : GET /ustadz/presensi-kegiatan/create
+Route -> Ctrl : create()
+Ctrl -> DB : Query kegiatan assign ustadz
+DB --> Ctrl : List kegiatan
+Ctrl --> Browser : Render form presensi
+
+Ustadz -> Browser : Ambil GPS, isi form, submit
+Browser -> Route : POST /ustadz/presensi-kegiatan
+Route -> Ctrl : store(request)
+
+Ctrl -> Geo : isWithinRadius(lat, lng)
+Geo -> Geo : Hitung Haversine distance
+Geo --> Ctrl : true/false
+
+alt Dalam Radius
+    Ctrl -> DB : INSERT presensi_kegiatan (status=valid)
+else Di Luar Radius
+    Ctrl -> DB : INSERT presensi_kegiatan (status=invalid)
+end
+
+DB --> Ctrl : PresensiKegiatan saved
+Ctrl --> Browser : Redirect + flash message
+Browser --> Ustadz : Tampilkan detail presensi
+
+@enduml

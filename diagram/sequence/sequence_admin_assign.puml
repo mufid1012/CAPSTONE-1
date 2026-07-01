@@ -1,0 +1,40 @@
+@startuml
+
+title Sequence Diagram - Admin: Assign Ustadz ke Kegiatan
+
+actor Admin
+participant "Browser" as Browser
+participant "Route" as Route
+participant "UstadzKegiatanController" as Ctrl
+participant "Database" as DB
+
+Admin -> Browser : Akses menu Penugasan Kegiatan
+Browser -> Route : GET /admin/penugasan-kegiatan
+Route -> Ctrl : index()
+
+Ctrl -> DB : Query all ustadz
+DB --> Ctrl : List ustadz
+Ctrl -> DB : Query all kegiatan_pondok
+DB --> Ctrl : List kegiatan
+Ctrl -> DB : Query ustadz_kegiatan (existing assignments)
+DB --> Ctrl : Existing pivot data
+
+Ctrl --> Browser : Render matrix table\n(baris: ustadz, kolom: kegiatan, checkbox)
+
+Admin -> Browser : Centang/uncentang checkbox
+Admin -> Browser : Submit perubahan
+Browser -> Route : PUT /admin/penugasan-kegiatan/{ustadz}
+Route -> Ctrl : update(request, ustadz)
+
+Ctrl -> DB : BEGIN TRANSACTION
+Ctrl -> DB : DELETE ustadz_kegiatan WHERE user_id
+loop Setiap kegiatan yang dicentang
+    Ctrl -> DB : INSERT ustadz_kegiatan (user_id, kegiatan_pondok_id)
+end
+Ctrl -> DB : COMMIT
+
+DB --> Ctrl : Sukses
+Ctrl --> Browser : Redirect + sukses
+Browser --> Admin : Matrix terupdate
+
+@enduml

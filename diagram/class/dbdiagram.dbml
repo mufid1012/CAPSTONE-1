@@ -1,0 +1,175 @@
+Table users {
+  id INT [pk, increment]
+  name VARCHAR
+  email VARCHAR [unique, not null]
+  email_verified_at TIMESTAMP [null]
+  password VARCHAR [not null]
+  remember_token VARCHAR [null]
+  created_at TIMESTAMP
+  updated_at TIMESTAMP
+}
+
+Table santri {
+  id INT [pk, increment]
+  nama VARCHAR [not null]
+  nis VARCHAR [unique, not null]
+  kelas VARCHAR [not null]
+  tingkatan ENUM [not null, note: 'tsanawiyah | aliyah | takhassus']
+  wali_murid_id INT [null]
+  tanggal_lahir DATE [null]
+  created_at TIMESTAMP
+  updated_at TIMESTAMP
+}
+
+Table kegiatan_pondok {
+  id INT [pk, increment]
+  nama_kegiatan VARCHAR [not null]
+  deskripsi TEXT [null]
+  tingkatan ENUM [not null, note: 'tsanawiyah | aliyah | takhassus | semua']
+  kelas VARCHAR [null]
+  created_at TIMESTAMP
+  updated_at TIMESTAMP
+}
+
+Table ustadz_kegiatan {
+  id INT [pk, increment]
+  user_id INT [not null]
+  kegiatan_pondok_id INT [not null]
+  created_at TIMESTAMP
+
+  Indexes {
+    (user_id, kegiatan_pondok_id) [unique]
+  }
+}
+
+Table ustadz_santri {
+  id INT [pk, increment]
+  user_id INT [not null]
+  santri_id INT [not null]
+  created_at TIMESTAMP
+
+  Indexes {
+    (user_id, santri_id) [unique]
+  }
+}
+
+Table presensi_kegiatan {
+  id INT [pk, increment]
+  kegiatan_pondok_id INT [not null]
+  ustadz_id INT [not null]
+  tanggal DATE [not null]
+  hari VARCHAR [not null]
+  jam_mulai TIME [not null]
+  jam_selesai TIME [null]
+  materi TEXT [null]
+  latitude DECIMAL [not null]
+  longitude DECIMAL [not null]
+  status ENUM [not null, note: 'valid | invalid | pending']
+  created_at TIMESTAMP
+}
+
+Table presensi_santri {
+  id INT [pk, increment]
+  presensi_kegiatan_id INT [not null]
+  santri_id INT [not null]
+  status ENUM [not null, note: 'hadir | izin | sakit | alpha']
+  created_at TIMESTAMP
+
+  Indexes {
+    (presensi_kegiatan_id, santri_id) [unique]
+  }
+}
+
+Table setoran_hafalan {
+  id INT [pk, increment]
+  santri_id INT [not null]
+  ustadz_id INT [not null]
+  tanggal DATE [not null]
+  juz INT [not null, note: '1-30']
+  surat VARCHAR [not null]
+  ayat VARCHAR [not null]
+  nilai DECIMAL [null]
+  status_selesai BOOLEAN [default: false]
+  catatan TEXT [null]
+  created_at TIMESTAMP
+}
+
+Table murojaah {
+  id INT [pk, increment]
+  santri_id INT [not null]
+  ustadz_id INT [not null]
+  tanggal DATE [not null]
+  juz INT [not null, note: '1-30']
+  surat VARCHAR [not null]
+  ayat VARCHAR [not null]
+  nilai DECIMAL [null]
+  status_selesai BOOLEAN [default: false]
+  created_at TIMESTAMP
+}
+
+Table roles {
+  id INT [pk, increment]
+  name VARCHAR [not null]
+  guard_name VARCHAR [not null]
+  created_at TIMESTAMP
+  updated_at TIMESTAMP
+}
+
+Table permissions {
+  id INT [pk, increment]
+  name VARCHAR [not null]
+  guard_name VARCHAR [not null]
+  created_at TIMESTAMP
+  updated_at TIMESTAMP
+}
+
+Table model_has_roles {
+  role_id INT [not null]
+  model_type VARCHAR [not null]
+  model_id INT [not null]
+
+  Indexes {
+    (role_id, model_id, model_type) [unique]
+  }
+}
+
+Table model_has_permissions {
+  permission_id INT [not null]
+  model_type VARCHAR [not null]
+  model_id INT [not null]
+
+  Indexes {
+    (permission_id, model_id, model_type) [unique]
+  }
+}
+
+Table role_has_permissions {
+  permission_id INT [not null]
+  role_id INT [not null]
+
+  Indexes {
+    (permission_id, role_id) [unique]
+  }
+}
+
+' ============================================================
+' RELATIONSHIPS
+' ============================================================
+
+Ref: santri.wali_murid_id > users.id
+Ref: ustadz_kegiatan.user_id > users.id
+Ref: ustadz_kegiatan.kegiatan_pondok_id > kegiatan_pondok.id
+Ref: ustadz_santri.user_id > users.id
+Ref: ustadz_santri.santri_id > santri.id
+Ref: presensi_kegiatan.kegiatan_pondok_id > kegiatan_pondok.id
+Ref: presensi_kegiatan.ustadz_id > users.id
+Ref: presensi_santri.presensi_kegiatan_id > presensi_kegiatan.id
+Ref: presensi_santri.santri_id > santri.id
+Ref: setoran_hafalan.santri_id > santri.id
+Ref: setoran_hafalan.ustadz_id > users.id
+Ref: murojaah.santri_id > santri.id
+Ref: murojaah.ustadz_id > users.id
+Ref: model_has_roles.role_id > roles.id
+Ref: model_has_permissions.permission_id > permissions.id
+Ref: role_has_permissions.permission_id > permissions.id
+Ref: role_has_permissions.role_id > roles.id

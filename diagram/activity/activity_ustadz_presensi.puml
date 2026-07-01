@@ -1,0 +1,61 @@
+@startuml
+
+title Activity Diagram - Ustadz: Presensi Kegiatan + Presensi Santri
+
+|Ustadz|
+
+start
+
+:Ustadz mengakses menu Presensi Kegiatan;
+:Klik "Buat Presensi Baru";
+:Pilih Kegiatan dari dropdown
+(berdasarkan assignment);
+
+split
+    :Buka form presensi;
+    :Ambil lokasi GPS
+    (latitude, longitude);
+    :Isi form (Tanggal, Jam Mulai,
+    Materi opsional);
+    :Submit presensi;
+split again
+    |Sistem|
+    :Sistem membaca koordinat
+    pesantren dari config;
+    :Hitung jarak dengan
+    Haversine Formula;
+    if (Dalam radius?) then (Ya)
+        :Status = valid;
+        :Simpan presensi kegiatan;
+        :Tampilkan sukses;
+    else (Tidak)
+        :Status = invalid;
+        :Simpan presensi kegiatan;
+        :Tampilkan peringatan
+        di luar area pesantren;
+    endif
+end split
+
+|Ustadz|
+:Lihat detail presensi kegiatan;
+:Klik "Isi Presensi Santri";
+
+|Sistem|
+:Ambil daftar santri binaan
+sesuai tingkatan/kelas kegiatan;
+
+|Ustadz|
+repeat
+    :Pilih status tiap santri
+    (Hadir/Izin/Sakit/Alpha);
+repeat while (Semua santri sudah diisi?)
+
+:Submit daftar presensi santri;
+
+|Sistem|
+:Simpan presensi santri
+per santri ke database;
+:Tampilkan ringkasan presensi;
+stop
+
+@enduml

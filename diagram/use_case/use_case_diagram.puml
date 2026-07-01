@@ -1,0 +1,180 @@
+@startuml Sistem Informasi Administrasi PPTQ Ibnu Juraimi
+
+!define COLOR_ADMIN   #FFD700
+!define COLOR_USTADZ  #87CEEB
+!define COLOR_WALI    #90EE90
+!define COLOR_SYSTEM  #D3D3D3
+
+title Use Case Diagram - Sistem Informasi Administrasi PPTQ Ibnu Juraimi
+
+left to right direction
+skinparam packageStyle rectangle
+
+' ============================================================
+' ACTORS
+' ============================================================
+actor "Admin\n(Pengelola)" as Admin <<admin>> COLOR_ADMIN
+actor "Ustadz\n(Guru)" as Ustadz <<ustadz>> COLOR_USTADZ
+actor "Wali Murid\n(Orang Tua)" as WaliMurid <<wali>> COLOR_WALI
+
+' ============================================================
+' SYSTEM BOUNDARY
+' ============================================================
+rectangle "Sistem Informasi Administrasi PPTQ Ibnu Juraimi" {
+    ' ============================================================
+    ' AUTHENTICATION (shared)
+    ' ============================================================
+    usecase (Login) as UC_Login
+    usecase (Logout) as UC_Logout
+    usecase (Register) as UC_Register
+    usecase (Lupa Password) as UC_ForgotPassword
+    usecase (Verifikasi Email) as UC_VerifyEmail
+    usecase (Edit Profil) as UC_EditProfile
+
+    ' ============================================================
+    ' ADMIN USE CASES
+    ' ============================================================
+    package "Admin" COLOR_ADMIN {
+        package "Manajemen Data Master" {
+            usecase "Kelola Data Santri\n(CRUD)" as UC_AdminSantri
+            usecase "Kelola Data Ustadz\n(CRUD)" as UC_AdminUstadz
+            usecase "Kelola Data Wali Murid\n(CRUD)" as UC_AdminWaliMurid
+            usecase "Kelola Data Kegiatan Pondok\n(CRUD)" as UC_AdminKegiatan
+        }
+
+        package "Penugasan" {
+            usecase "Assign Ustadz ke Kegiatan" as UC_AssignUstadzKegiatan
+            usecase "Assign Santri Binaan ke Ustadz" as UC_AssignSantriUstadz
+            usecase "Filter berdasarkan Tingkatan & Kelas" as UC_FilterTingkatan
+        }
+
+        package "Laporan & Monitoring" {
+            usecase "Lihat Laporan Presensi Ustadz" as UC_LapPresensiUstadz
+            usecase "Lihat Laporan Presensi Santri" as UC_LapPresensiSantri
+            usecase "Lihat Laporan Setoran Hafalan" as UC_LapSetoran
+            usecase "Lihat Laporan Murojaah" as UC_LapMurojaah
+            usecase "Filter Laporan (Bulan/Tingkatan/Kelas)" as UC_FilterLaporan
+            usecase "Lihat Dashboard Admin" as UC_DashboardAdmin
+        }
+    }
+
+    ' ============================================================
+    ' USTADZ USE CASES
+    ' ============================================================
+    package "Ustadz" COLOR_USTADZ {
+        usecase "Lihat Dashboard Ustadz" as UC_DashboardUstadz
+
+        package "Presensi Kegiatan" {
+            usecase "Melakukan Presensi Kegiatan\n(GPS/Geolokasi)" as UC_PresensiKegiatan
+            usecase "Lihat Riwayat Presensi Kegiatan" as UC_RiwayatPresensiKegiatan
+        }
+
+        package "Presensi Santri" {
+            usecase "Mencatat Kehadiran Santri\n(Hadir/Izin/Sakit/Alpha)" as UC_PresensiSantri
+        }
+
+        package "Setoran Hafalan" {
+            usecase "Mencatat Setoran Hafalan\n(Juz, Surat, Ayat, Nilai)" as UC_SetoranHafalan
+            usecase "Lihat Riwayat Setoran Hafalan" as UC_RiwayatSetoran
+        }
+
+        package "Murojaah" {
+            usecase "Mencatat Murojaah\n(Juz, Surat, Ayat, Nilai)" as UC_Murojaah
+            usecase "Lihat Riwayat Murojaah" as UC_RiwayatMurojaah
+        }
+    }
+
+    ' ============================================================
+    ' WALI MURID USE CASES
+    ' ============================================================
+    package "Wali Murid" COLOR_WALI {
+        usecase "Lihat Dashboard Wali Murid\n(Summary per Anak)" as UC_DashboardWali
+        usecase "Lihat Laporan Mingguan" as UC_LaporanMingguan
+        usecase "Lihat Riwayat Kegiatan\n(Kehadiran Santri)" as UC_RiwayatKegiatan
+        usecase "Filter Berdasarkan Santri & Minggu" as UC_FilterWali
+    }
+
+    ' ============================================================
+    ' SYSTEM
+    ' ============================================================
+    usecase "Validasi GPS\n(Haversine Formula)" as UC_GPSValidation
+    usecase "Kirim Email Verifikasi" as UC_SendEmail
+    usecase "Kirim Email Reset Password" as UC_SendReset
+}
+
+' ============================================================
+' RELATIONSHIPS - ALL TO AUTH
+' ============================================================
+Admin     --> UC_Login
+Admin     --> UC_Logout
+Admin     --> UC_Register
+Admin     --> UC_ForgotPassword
+Admin     --> UC_VerifyEmail
+Admin     --> UC_EditProfile
+
+Ustadz    --> UC_Login
+Ustadz    --> UC_Logout
+Ustadz    --> UC_ForgotPassword
+Ustadz    --> UC_VerifyEmail
+Ustadz    --> UC_EditProfile
+
+WaliMurid --> UC_Login
+WaliMurid --> UC_Logout
+WaliMurid --> UC_ForgotPassword
+WaliMurid --> UC_VerifyEmail
+WaliMurid --> UC_EditProfile
+
+' ============================================================
+' RELATIONSHIPS - ADMIN
+' ============================================================
+Admin --> UC_AdminSantri
+Admin --> UC_AdminUstadz
+Admin --> UC_AdminWaliMurid
+Admin --> UC_AdminKegiatan
+Admin --> UC_AssignUstadzKegiatan
+Admin --> UC_AssignSantriUstadz
+Admin --> UC_DashboardAdmin
+Admin --> UC_LapPresensiUstadz
+Admin --> UC_LapPresensiSantri
+Admin --> UC_LapSetoran
+Admin --> UC_LapMurojaah
+
+UC_AssignUstadzKegiatan ..> UC_FilterTingkatan : <<extend>>
+UC_AssignSantriUstadz ..> UC_FilterTingkatan : <<extend>>
+UC_LapPresensiUstadz ..> UC_FilterLaporan : <<extend>>
+UC_LapPresensiSantri ..> UC_FilterLaporan : <<extend>>
+UC_LapSetoran ..> UC_FilterLaporan : <<extend>>
+UC_LapMurojaah ..> UC_FilterLaporan : <<extend>>
+
+' ============================================================
+' RELATIONSHIPS - USTADZ
+' ============================================================
+Ustadz --> UC_DashboardUstadz
+Ustadz --> UC_PresensiKegiatan
+Ustadz --> UC_RiwayatPresensiKegiatan
+Ustadz --> UC_PresensiSantri
+Ustadz --> UC_SetoranHafalan
+Ustadz --> UC_RiwayatSetoran
+Ustadz --> UC_Murojaah
+Ustadz --> UC_RiwayatMurojaah
+
+UC_PresensiKegiatan ..> UC_GPSValidation : <<include>>
+UC_PresensiSantri ..> UC_PresensiKegiatan : <<include>>
+
+' ============================================================
+' RELATIONSHIPS - WALI MURID
+' ============================================================
+WaliMurid --> UC_DashboardWali
+WaliMurid --> UC_LaporanMingguan
+WaliMurid --> UC_RiwayatKegiatan
+
+UC_LaporanMingguan ..> UC_FilterWali : <<extend>>
+UC_RiwayatKegiatan ..> UC_FilterWali : <<extend>>
+
+' ============================================================
+' RELATIONSHIPS - SYSTEM
+' ============================================================
+UC_ForgotPassword ..> UC_SendReset : <<include>>
+UC_Register ..> UC_SendEmail : <<include>>
+
+@enduml

@@ -1,0 +1,50 @@
+@startuml
+
+title Activity Diagram - Admin: Kelola Data Santri (CRUD)
+
+start
+
+:Admin mengakses menu Santri;
+
+if (Aksi?) then (<color:green>Tambah</color>)
+    :Klik "Tambah Santri";
+    :Isi form (Nama, NIS, Kelas, Tingkatan, Wali Murid, Tgl Lahir);
+    :Submit form;
+    if (Validasi?) then (<color:green>Valid</color>)
+        :Simpan data Santri ke database;
+        :Tampilkan pesan sukses;
+    else (<color:red>Invalid</color>)
+        :Tampilkan error validasi;
+        :Kembali ke form;
+    endif
+
+elseif (Aksi?) then (<color:orange>Edit</color>)
+    :Pilih Santri dari list;
+    :Klik "Edit";
+    :Ubah data di form;
+    :Submit form;
+    if (Validasi?) then (<color:green>Valid</color>)
+        :Update data Santri;
+        :Tampilkan pesan sukses;
+    else (<color:red>Invalid</color>)
+        :Tampilkan error validasi;
+        :Kembali ke form;
+    endif
+
+elseif (Aksi?) then (<color:red>Hapus</color>)
+    :Pilih Santri dari list;
+    :Klik "Hapus";
+    :Konfirmasi hapus;
+    :Hapus data Santri dari database;
+    :Tampilkan pesan sukses;
+
+else (<color:blue>Lihat</color>)
+    :Lihat daftar Santri;
+    :Filter berdasarkan Tingkatan/Kelas;
+    :Tampilkan data dalam tabel;
+
+endif
+
+stop
+
+@enduml

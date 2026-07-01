@@ -1,0 +1,41 @@
+@startuml
+
+title Activity Diagram - Ustadz: Setoran Hafalan & Murojaah
+
+start
+
+:Ustadz mengakses menu
+Setoran Hafalan / Murojaah;
+
+:Filter santri binaan
+dari dropdown;
+
+:Klik "Tambah Setoran"
+atau "Tambah Murojaah";
+
+:Pilih Santri;
+
+:Isi form (
+    Tanggal,
+    Juz (1-30),
+    Surat,
+    Ayat (contoh: "1-10"),
+    Nilai (opsional),
+    Status Selesai (checkbox),
+    Catatan (opsional)
+);
+
+:Submit form;
+
+if (Validasi data?) then (<color:green>Valid</color>)
+    :Simpan ke database;
+    #lightgreen:Tampilkan sukses;
+    :Kembali ke daftar riwayat;
+else (<color:red>Invalid</color>)
+    #salmon:Tampilkan error validasi;
+    :Kembali ke form;
+endif
+
+stop
+
+@enduml

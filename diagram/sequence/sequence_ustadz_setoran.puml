@@ -1,0 +1,44 @@
+@startuml
+
+title Sequence Diagram - Ustadz: Setoran Hafalan
+
+actor Ustadz
+participant "Browser" as Browser
+participant "Route" as Route
+participant "SetoranHafalanController" as Ctrl
+participant "Database" as DB
+
+Ustadz -> Browser : Akses menu Setoran Hafalan
+Ustadz -> Browser : Filter santri binaan
+Browser -> Route : GET /ustadz/setoran-hafalan?filter
+Route -> Ctrl : index(request)
+
+Ctrl -> DB : Query santri_binaan ustadz
+DB --> Ctrl : List santri + existing setoran
+Ctrl --> Browser : Render tabel + filter
+
+Ustadz -> Browser : Klik "Tambah Setoran"
+Browser -> Route : GET /ustadz/setoran-hafalan/create
+Route -> Ctrl : create()
+Ctrl -> DB : Query santri_binaan
+DB --> Ctrl : List santri
+Ctrl --> Browser : Render form
+
+Ustadz -> Browser : Isi form (Santri, Tanggal,\nJuz, Surat, Ayat, Nilai, Status)
+Ustadz -> Browser : Submit
+Browser -> Route : POST /ustadz/setoran-hafalan
+Route -> Ctrl : store(request)
+
+Ctrl -> Ctrl : Validasi (juz 1-30, required fields)
+
+alt Valid
+    Ctrl -> DB : INSERT setoran_hafalan
+    DB --> Ctrl : Saved
+    Ctrl --> Browser : Redirect + sukses
+else Invalid
+    Ctrl --> Browser : Redirect back + error
+end
+
+Browser --> Ustadz : Tampilkan riwayat setoran
+
+@enduml

@@ -1,0 +1,207 @@
+@startuml
+
+title Class Diagram - Sistem Informasi Administrasi PPTQ Ibnu Juraimi
+
+skinparam classAttributeIconSize 0
+
+' ============================================================
+' CORE MODELS
+' ============================================================
+
+class User {
+    - id: INT
+    - name: string
+    - email: string (unique)
+    - email_verified_at: timestamp
+    - password: string
+    - remember_token: string
+    - timestamps
+    --
+    + santriAsWali(): hasMany
+    + kegiatanPondok(): belongsToMany
+    + santriBinaan(): belongsToMany
+    + presensiKegiatan(): hasMany
+    + setoranHafalan(): hasMany
+    + murojaah(): hasMany
+}
+
+class Santri {
+    - id: INT
+    - nama: string
+    - nis: string (unique)
+    - kelas: string
+    - tingkatan: enum (tsanawiyah|aliyah|takhassus)
+    - wali_murid_id: INT (FK, nullable)
+    - tanggal_lahir: date
+    - timestamps
+    --
+    + waliMurid(): belongsTo
+    + ustadzPembina(): belongsToMany
+    + presensiSantri(): hasMany
+    + setoranHafalan(): hasMany
+    + murojaah(): hasMany
+}
+
+class KegiatanPondok {
+    - id: INT
+    - nama_kegiatan: string
+    - deskripsi: text (nullable)
+    - tingkatan: enum (tsanawiyah|aliyah|takhassus|semua)
+    - kelas: string (nullable)
+    - timestamps
+    --
+    + ustadz(): belongsToMany
+    + presensiKegiatan(): hasMany
+}
+
+class PresensiKegiatan {
+    - id: INT
+    - kegiatan_pondok_id: INT (FK)
+    - ustadz_id: INT (FK)
+    - tanggal: date
+    - hari: string
+    - jam_mulai: time
+    - jam_selesai: time (nullable)
+    - materi: text (nullable)
+    - latitude: decimal
+    - longitude: decimal
+    - status: enum (valid|invalid|pending)
+    - created_at: timestamp
+    --
+    + kegiatanPondok(): belongsTo
+    + ustadz(): belongsTo
+    + presensiSantri(): hasMany
+}
+
+class PresensiSantri {
+    - id: INT
+    - presensi_kegiatan_id: INT (FK)
+    - santri_id: INT (FK)
+    - status: enum (hadir|izin|sakit|alpha)
+    - created_at: timestamp
+    --
+    + presensiKegiatan(): belongsTo
+    + santri(): belongsTo
+}
+
+class SetoranHafalan {
+    - id: INT
+    - santri_id: INT (FK)
+    - ustadz_id: INT (FK)
+    - tanggal: date
+    - juz: integer (1-30)
+    - surat: string
+    - ayat: string
+    - nilai: decimal (nullable)
+    - status_selesai: boolean
+    - catatan: text (nullable)
+    - created_at: timestamp
+    --
+    + santri(): belongsTo
+    + ustadz(): belongsTo
+}
+
+class Murojaah {
+    - id: INT
+    - santri_id: INT (FK)
+    - ustadz_id: INT (FK)
+    - tanggal: date
+    - juz: integer (1-30)
+    - surat: string
+    - ayat: string
+    - nilai: decimal (nullable)
+    - status_selesai: boolean
+    - created_at: timestamp
+    --
+    + santri(): belongsTo
+    + ustadz(): belongsTo
+}
+
+' ============================================================
+' SPATIE PERMISSION
+' ============================================================
+
+class Role {
+    - id: INT
+    - name: string
+    - guard_name: string
+    - timestamps
+}
+
+class Permission {
+    - id: INT
+    - name: string
+    - guard_name: string
+    - timestamps
+}
+
+class ModelHasRoles {
+    - role_id: INT (FK)
+    - model_type: string
+    - model_id: INT
+
+}
+
+class ModelHasPermissions {
+    - permission_id: INT (FK)
+    - model_type: string
+    - model_id: INT
+}
+
+class RoleHasPermissions {
+    - permission_id: INT (FK)
+    - role_id: INT (FK)
+}
+
+' ============================================================
+' PIVOT TABLES
+' ============================================================
+
+class UstadzKegiatan {
+    - id: INT
+    - user_id: INT (FK)
+    - kegiatan_pondok_id: INT (FK)
+    - created_at: timestamp
+    --
+    {unique: [user_id, kegiatan_pondok_id]}
+}
+
+class UstadzSantri {
+    - id: INT
+    - user_id: INT (FK)
+    - santri_id: INT (FK)
+    - created_at: timestamp
+    --
+    {unique: [user_id, santri_id]}
+}
+
+' ============================================================
+' RELATIONSHIPS
+' ============================================================
+
+User "1" -- "0..*" Santri : wali_murid >
+User "1" -- "0..*" PresensiKegiatan : ustadz >
+User "1" -- "0..*" SetoranHafalan : ustadz >
+User "1" -- "0..*" Murojaah : ustadz >
+
+User "1" -- "0..*" UstadzKegiatan : >
+UstadzKegiatan "0..*" -- "1" KegiatanPondok : >
+
+User "1" -- "0..*" UstadzSantri : >
+UstadzSantri "0..*" -- "1" Santri : >
+
+KegiatanPondok "1" -- "0..*" PresensiKegiatan : >
+PresensiKegiatan "1" -- "0..*" PresensiSantri : >
+
+Santri "1" -- "0..*" PresensiSantri : >
+Santri "1" -- "0..*" SetoranHafalan : >
+Santri "1" -- "0..*" Murojaah : >
+
+User "1" -- "0..*" ModelHasRoles : polymorphic >
+ModelHasRoles "0..*" -- "1" Role : >
+User "1" -- "0..*" ModelHasPermissions : polymorphic >
+ModelHasPermissions "0..*" -- "1" Permission : >
+Role "1" -- "0..*" RoleHasPermissions : >
+RoleHasPermissions "0..*" -- "1" Permission : >
+
+@enduml

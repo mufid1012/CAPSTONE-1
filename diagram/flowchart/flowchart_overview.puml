@@ -1,0 +1,51 @@
+@startuml
+
+title Flowchart - Sistem Informasi Administrasi PPTQ Ibnu Juraimi
+
+start
+
+:Login;
+if (Role?) then (Admin)
+    :Dashboard Admin;
+
+    :Kelola Santri;
+    :Kelola Ustadz;
+    :Kelola Wali Murid;
+    :Kelola Kegiatan;
+    :Assign Ustadz ke Kegiatan;
+    :Assign Santri ke Ustadz;
+    :Lihat Laporan;
+
+elseif (Role?) then (Ustadz)
+    :Dashboard Ustadz;
+
+    :Buka Presensi Kegiatan;
+    :Ambil GPS;
+    if (Radius?) then (Valid)
+        :Presensi Tersimpan Valid;
+    else (Invalid)
+        :Presensi Invalid;
+    endif
+
+    :Isi Presensi Santri;
+    :Pilih Status (Hadir/Izin/Sakit/Alpha);
+    :Simpan Presensi Santri;
+
+    :Catat Setoran Hafalan;
+    :Catat Murojaah;
+
+else (Wali Murid)
+    :Dashboard Wali Murid;
+
+    :Pilih Santri (Anak);
+    :Lihat Laporan Mingguan;
+    :Lihat Riwayat Kegiatan;
+    :Lihat Statistik Kehadiran;
+
+endif
+
+:Logout;
+
+stop
+
+@enduml

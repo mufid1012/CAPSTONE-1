@@ -1,0 +1,44 @@
+@startuml
+
+title Sequence Diagram - Admin: Kelola Data Santri (Create)
+
+actor Admin
+participant "Browser" as Browser
+participant "Route" as Route
+participant "SantriController" as Ctrl
+participant "Database" as DB
+
+Admin -> Browser : Akses menu Santri
+Browser -> Route : GET /admin/santri
+Route -> Ctrl : index()
+
+Ctrl -> DB : Query santri with tingkatan/kelas
+DB --> Ctrl : List santri
+Ctrl --> Browser : Render tabel + filter
+
+Admin -> Browser : Klik "Tambah Santri"
+Browser -> Route : GET /admin/santri/create
+Route -> Ctrl : create()
+
+Ctrl -> DB : Query users WHERE role=wali_murid
+DB --> Ctrl : List wali murid
+Ctrl --> Browser : Render form
+
+Admin -> Browser : Isi form (Nama, NIS, Kelas,\nTingkatan, Wali Murid, Tgl Lahir)
+Admin -> Browser : Submit
+Browser -> Route : POST /admin/santri
+Route -> Ctrl : store(request)
+
+Ctrl -> Ctrl : Validasi (nis unique, required fields)
+
+alt Valid
+    Ctrl -> DB : INSERT santri
+    DB --> Ctrl : Saved
+    Ctrl --> Browser : Redirect /admin/santri + sukses
+else Invalid
+    Ctrl --> Browser : Redirect back + error
+end
+
+Browser --> Admin : Tampilkan daftar santri
+
+@enduml

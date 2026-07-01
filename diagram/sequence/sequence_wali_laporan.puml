@@ -1,0 +1,32 @@
+@startuml
+
+title Sequence Diagram - Wali Murid: Lihat Laporan Mingguan
+
+actor "Wali Murid" as Wali
+participant "Browser" as Browser
+participant "Route" as Route
+participant "LaporanMingguanController" as Ctrl
+participant "Database" as DB
+
+Wali -> Browser : Akses menu Laporan Mingguan
+Browser -> Route : GET /wali-murid/laporan-mingguan
+Route -> Ctrl : index()
+
+Ctrl -> DB : Query santri WHERE wali_murid_id = user.id
+DB --> Ctrl : List anak santri wali
+Ctrl --> Browser : Render halaman + dropdown santri
+
+Wali -> Browser : Pilih santri dan minggu
+Browser -> Route : GET /wali-murid/laporan-mingguan?santri_id=X&minggu=Y
+Route -> Ctrl : index(request)
+
+Ctrl -> DB : Query setoran_hafalan\nWHERE santri_id AND tanggal BETWEEN
+DB --> Ctrl : List setoran hafalan mingguan
+
+Ctrl -> DB : Query murojaah\nWHERE santri_id AND tanggal BETWEEN
+DB --> Ctrl : List murojaah mingguan
+
+Ctrl --> Browser : Render tabel hafalan + murojaah
+Browser --> Wali : Tampilkan laporan mingguan
+
+@enduml

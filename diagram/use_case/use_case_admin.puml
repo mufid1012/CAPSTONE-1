@@ -1,0 +1,58 @@
+@startuml
+
+title Use Case - Admin (Pengelola) PPTQ Ibnu Juraimi
+
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Admin" as Admin
+
+rectangle "Sistem Informasi PPTQ Ibnu Juraimi" {
+
+    usecase "Login" as UC_Login
+    usecase "Logout" as UC_Logout
+    usecase "Edit Profil" as UC_EditProfile
+
+    usecase "Kelola Data Santri\n(CRUD)" as UC_Santri
+    usecase "Kelola Data Ustadz\n(CRUD)" as UC_Ustadz
+    usecase "Kelola Data Wali Murid\n(CRUD)" as UC_WaliMurid
+    usecase "Kelola Data Kegiatan Pondok\n(CRUD)" as UC_Kegiatan
+
+    usecase "Assign Ustadz ke Kegiatan" as UC_AssignUstdKeg
+    usecase "Assign Santri Binaan ke Ustadz" as UC_AssignSantriUstd
+
+    usecase "Laporan Presensi Ustadz" as UC_LapPresensiUstd
+    usecase "Laporan Presensi Santri" as UC_LapPresensiSantri
+    usecase "Laporan Setoran Hafalan" as UC_LapSetoran
+    usecase "Laporan Murojaah" as UC_LapMurojaah
+
+    usecase "Dashboard Admin" as UC_Dashboard
+
+    usecase "Filter Tingkatan & Kelas" as UC_Filter
+    usecase "Filter Laporan" as UC_FilterLaporan
+}
+
+Admin --> UC_Login
+Admin --> UC_Logout
+Admin --> UC_EditProfile
+
+Admin --> UC_Santri
+Admin --> UC_Ustadz
+Admin --> UC_WaliMurid
+Admin --> UC_Kegiatan
+Admin --> UC_AssignUstdKeg
+Admin --> UC_AssignSantriUstd
+Admin --> UC_LapPresensiUstd
+Admin --> UC_LapPresensiSantri
+Admin --> UC_LapSetoran
+Admin --> UC_LapMurojaah
+Admin --> UC_Dashboard
+
+UC_AssignUstdKeg ..> UC_Filter : <<extend>>
+UC_AssignSantriUstd ..> UC_Filter : <<extend>>
+UC_LapPresensiUstd ..> UC_FilterLaporan : <<extend>>
+UC_LapPresensiSantri ..> UC_FilterLaporan : <<extend>>
+UC_LapSetoran ..> UC_FilterLaporan : <<extend>>
+UC_LapMurojaah ..> UC_FilterLaporan : <<extend>>
+
+@enduml

@@ -1,0 +1,50 @@
+@startuml
+
+title Activity Diagram - Wali Murid: Lihat Laporan Mingguan & Riwayat Kegiatan
+
+start
+
+:Wali Murid login;
+
+if (Menu dipilih?) then (Dashboard)
+    :Lihat Dashboard Wali Murid;
+    :Lihat summary per anak santri
+    (total setoran, murojaah,
+    sesi terakhir);
+    stop
+
+elseif (Menu dipilih?) then (Laporan Mingguan)
+    :Akses menu Laporan Mingguan;
+    :Pilih santri (anak) dari dropdown;
+    :Pilih rentang minggu;
+    :Sistem query data setoran
+    dan murojaah dari database;
+
+    split
+        :Lihat tabel hafalan mingguan
+        (Tanggal, Juz, Surat, Ayat,
+        Nilai, Status, Catatan);
+        :Lihat ringkasan capaian;
+    split again
+        :Lihat tabel murojaah mingguan
+        (Tanggal, Juz, Surat, Ayat,
+        Nilai, Status);
+        :Lihat ringkasan ulangan;
+    end split
+    stop
+
+else (Riwayat Kegiatan)
+    :Akses menu Riwayat Kegiatan;
+    :Pilih santri (anak) dari dropdown;
+    :Pilih rentang tanggal/bulan;
+    :Sistem query data presensi
+    santri dari database;
+    :Lihat tabel riwayat
+    (Kegiatan, Tanggal, Status:
+    Hadir/Izin/Sakit/Alpha);
+    :Lihat statistik kehadiran;
+    stop
+
+endif
+
+@enduml

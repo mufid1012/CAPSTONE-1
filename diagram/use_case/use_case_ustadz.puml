@@ -1,0 +1,48 @@
+@startuml
+
+title Use Case - Ustadz (Guru) PPTQ Ibnu Juraimi
+
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Ustadz" as Ustadz
+
+rectangle "Sistem Informasi PPTQ Ibnu Juraimi" {
+
+    usecase "Login" as UC_Login
+    usecase "Logout" as UC_Logout
+    usecase "Edit Profil" as UC_EditProfile
+
+    usecase "Presensi Kegiatan\n(GPS/Geolokasi)" as UC_PresensiUstd
+    usecase "Riwayat Presensi Kegiatan" as UC_RiwayatPresensiUstd
+
+    usecase "Presensi Santri\n(Hadir/Izin/Sakit/Alpha)" as UC_PresensiSantri
+
+    usecase "Setoran Hafalan\n(Juz, Surat, Ayat, Nilai)" as UC_Setoran
+    usecase "Riwayat Setoran Hafalan" as UC_RiwayatSetoran
+
+    usecase "Murojaah\n(Juz, Surat, Ayat, Nilai)" as UC_Murojaah
+    usecase "Riwayat Murojaah" as UC_RiwayatMurojaah
+
+    usecase "Dashboard Ustadz" as UC_Dashboard
+
+    usecase "Validasi GPS\n(Haversine Formula)" as UC_GPS
+}
+
+Ustadz --> UC_Login
+Ustadz --> UC_Logout
+Ustadz --> UC_EditProfile
+
+Ustadz --> UC_PresensiUstd
+Ustadz --> UC_RiwayatPresensiUstd
+Ustadz --> UC_PresensiSantri
+Ustadz --> UC_Setoran
+Ustadz --> UC_RiwayatSetoran
+Ustadz --> UC_Murojaah
+Ustadz --> UC_RiwayatMurojaah
+Ustadz --> UC_Dashboard
+
+UC_PresensiUstd ..> UC_GPS : <<include>>
+UC_PresensiSantri ..> UC_PresensiUstd : <<include>>
+
+@enduml
