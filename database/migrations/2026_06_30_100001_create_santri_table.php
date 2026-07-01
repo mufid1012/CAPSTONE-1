@@ -12,11 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('santri', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->string('nama');
-            $table->string('nis')->unique();
+            $table->integer('nis')->unique();
             $table->string('kelas')->nullable();
-            $table->foreignId('wali_murid_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->unsignedInteger('wali_murid_id')->nullable();
+            $table->foreign('wali_murid_id')->references('id')->on('users')->nullOnDelete();
             $table->date('tanggal_lahir')->nullable();
             $table->timestamps();
         });

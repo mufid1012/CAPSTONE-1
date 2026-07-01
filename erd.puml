@@ -1,0 +1,149 @@
+@startuml
+
+!define table(x) entity x << (T,#FFAAAA) >>
+!define primary_key(x) <b>x</b>
+!define foreign_key(x) <i>x</i>
+
+skinparam class {
+    BackgroundColor White
+    ArrowColor Black
+    BorderColor Black
+}
+
+table(users) {
+  primary_key(id) : INTEGER
+  --
+  name : VARCHAR
+  email : VARCHAR
+  password : VARCHAR
+  ...
+}
+
+table(santri) {
+  primary_key(id) : INTEGER
+  --
+  foreign_key(wali_murid_id) : INTEGER <<FK to users>>
+  nama : VARCHAR
+  nis : INTEGER
+  tingkatan : VARCHAR
+  kelas : VARCHAR
+  tanggal_lahir : DATE
+  ...
+}
+
+table(kegiatan_pondok) {
+  primary_key(id) : INTEGER
+  --
+  nama_kegiatan : VARCHAR
+  deskripsi : TEXT
+  tingkatan : VARCHAR
+  kelas : VARCHAR
+  ...
+}
+
+table(ustadz_kegiatan) {
+  primary_key(id) : INTEGER
+  --
+  foreign_key(user_id) : INTEGER <<FK to users (ustadz)>>
+  foreign_key(kegiatan_pondok_id) : INTEGER <<FK to kegiatan_pondok>>
+  ...
+}
+
+table(ustadz_santri) {
+  primary_key(id) : INTEGER
+  --
+  foreign_key(user_id) : INTEGER <<FK to users (ustadz)>>
+  foreign_key(santri_id) : INTEGER <<FK to santri>>
+  ...
+}
+
+table(presensi_kegiatan) {
+  primary_key(id) : INTEGER
+  --
+  foreign_key(kegiatan_pondok_id) : INTEGER <<FK to kegiatan_pondok>>
+  foreign_key(ustadz_id) : INTEGER <<FK to users>>
+  tanggal : DATE
+  hari : VARCHAR
+  jam_mulai : TIME
+  jam_selesai : TIME
+  materi : TEXT
+  latitude : DECIMAL
+  longitude : DECIMAL
+  status : ENUM
+  ...
+}
+
+table(presensi_santri) {
+  primary_key(id) : INTEGER
+  --
+  foreign_key(presensi_kegiatan_id) : INTEGER <<FK to presensi_kegiatan>>
+  foreign_key(santri_id) : INTEGER <<FK to santri>>
+  status : ENUM
+  ...
+}
+
+table(setoran_hafalan) {
+  primary_key(id) : INTEGER
+  --
+  foreign_key(santri_id) : INTEGER <<FK to santri>>
+  foreign_key(ustadz_id) : INTEGER <<FK to users>>
+  tanggal : DATE
+  juz : INTEGER
+  surat : VARCHAR
+  ayat : VARCHAR
+  nilai : INTEGER
+  status_selesai : BOOLEAN
+  ...
+}
+
+table(murojaah) {
+  primary_key(id) : INTEGER
+  --
+  foreign_key(santri_id) : INTEGER <<FK to santri>>
+  foreign_key(ustadz_id) : INTEGER <<FK to users>>
+  tanggal : DATE
+  juz : INTEGER
+  surat : VARCHAR
+  ayat : VARCHAR
+  nilai : INTEGER
+  status_selesai : BOOLEAN
+  ...
+}
+
+table(roles) {
+  primary_key(id) : INTEGER
+  --
+  name : VARCHAR
+  ...
+}
+
+table(model_has_roles) {
+  foreign_key(role_id) : INTEGER <<FK to roles>>
+  foreign_key(model_id) : INTEGER <<FK to users>>
+  ...
+}
+
+' Relationships
+users "1" -- "0..*" santri : wali_murid (1-to-many)
+roles "1" -- "0..*" model_has_roles
+users "1" -- "0..*" model_has_roles
+
+users "1" -- "0..*" ustadz_kegiatan : ustadz
+kegiatan_pondok "1" -- "0..*" ustadz_kegiatan
+
+users "1" -- "0..*" ustadz_santri : ustadz
+santri "1" -- "0..*" ustadz_santri : santri_binaan
+
+kegiatan_pondok "1" -- "0..*" presensi_kegiatan
+users "1" -- "0..*" presensi_kegiatan : ustadz_pengampu
+
+presensi_kegiatan "1" -- "0..*" presensi_santri
+santri "1" -- "0..*" presensi_santri
+
+santri "1" -- "0..*" setoran_hafalan
+users "1" -- "0..*" setoran_hafalan : ustadz_penilai
+
+santri "1" -- "0..*" murojaah
+users "1" -- "0..*" murojaah : ustadz_penilai
+
+@enduml

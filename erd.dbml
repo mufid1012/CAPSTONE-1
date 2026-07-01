@@ -1,0 +1,115 @@
+Table users {
+  id integer [primary key]
+  name varchar
+  email varchar
+  email_verified_at timestamp
+  password varchar
+  remember_token varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table roles {
+  id integer [primary key]
+  name varchar
+  guard_name varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table model_has_roles {
+  role_id integer [ref: > roles.id]
+  model_type varchar
+  model_id integer [ref: > users.id, note: 'Polymorphic relation to users']
+}
+
+Table santri {
+  id integer [primary key]
+  wali_murid_id integer [ref: > users.id]
+  nama varchar
+  nis integer
+  tingkatan varchar
+  kelas varchar
+  tanggal_lahir date
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table kegiatan_pondok {
+  id integer [primary key]
+  nama_kegiatan varchar
+  deskripsi text
+  tingkatan varchar
+  kelas varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ustadz_kegiatan {
+  id integer [primary key]
+  user_id integer [ref: > users.id, note: 'Ustadz']
+  kegiatan_pondok_id integer [ref: > kegiatan_pondok.id]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ustadz_santri {
+  id integer [primary key]
+  user_id integer [ref: > users.id, note: 'Ustadz']
+  santri_id integer [ref: > santri.id]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table presensi_kegiatan {
+  id integer [primary key]
+  kegiatan_pondok_id integer [ref: > kegiatan_pondok.id]
+  ustadz_id integer [ref: > users.id]
+  tanggal date
+  hari varchar
+  jam_mulai time
+  jam_selesai time
+  materi text
+  latitude decimal
+  longitude decimal
+  status varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table presensi_santri {
+  id integer [primary key]
+  presensi_kegiatan_id integer [ref: > presensi_kegiatan.id]
+  santri_id integer [ref: > santri.id]
+  status varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table setoran_hafalan {
+  id integer [primary key]
+  santri_id integer [ref: > santri.id]
+  ustadz_id integer [ref: > users.id]
+  tanggal date
+  juz integer
+  surat varchar
+  ayat varchar
+  nilai integer
+  status_selesai boolean
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table murojaah {
+  id integer [primary key]
+  santri_id integer [ref: > santri.id]
+  ustadz_id integer [ref: > users.id]
+  tanggal date
+  juz integer
+  surat varchar
+  ayat varchar
+  nilai integer
+  status_selesai boolean
+  created_at timestamp
+  updated_at timestamp
+}
